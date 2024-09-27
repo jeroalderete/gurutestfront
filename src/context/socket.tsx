@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
@@ -14,29 +14,28 @@ interface SocketProviderProps {
    children: ReactNode;
 }
 
-export const SocketProvider: React.FC<SocketProviderProps> = ( props ) => {
+export const SocketProvider: React.FC<SocketProviderProps> = (props) => {
    const { children } = props;
    const [socket, setSocket] = useState<Socket | null>(null);
 
-
+   const URL = "https://webrtcapipublic-1.onrender.com"; // URL del servidor
 
    useEffect(() => {
-      const connection = io();
-      console.log("socket connection", connection)
+      const connection = io(URL, {
+         transports: ["websocket", "polling"], // Asegúrate de incluir ambos transportes
+      });
+      console.log("Socket connection established:", connection);
       setSocket(connection);
+
+      // Manejo de errores de conexión
+      connection.on('connect_error', (err) => {
+         console.error("Error establishing socket connection:", err);
+      });
 
       return () => {
          connection.disconnect();
       };
-
-    }, []);
-
- 
-
- socket?.on('connect_error', async (err) => {
-    console.log("Error establishing socket", err)
-    await fetch('https://webrtcapipublic-1.onrender.com')
-  }) 
+   }, []);
 
    return (
       <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
