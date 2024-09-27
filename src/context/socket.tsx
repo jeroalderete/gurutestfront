@@ -18,7 +18,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ( props ) => {
    const { children } = props;
    const [socket, setSocket] = useState<Socket | null>(null);
 
- const URL = "https://webrtcapipublic-1.onrender.com";
+
 
    useEffect(() => {
       const connection = io();
